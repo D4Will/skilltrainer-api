@@ -3,6 +3,7 @@ from users.models import User
 
 class RegularUserSerializer(serializers.ModelSerializer):
   password = serializers.CharField(write_only=True)
+  
   class Meta:
     model = User
     fields = [
