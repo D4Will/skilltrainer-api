@@ -21,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-*565+9ek+^(!$)rmag1up#zn*-)!#ipf@l%fr7__cvhhhla%&i'
+SECRET_KEY = 'a5fcf4a6ef27686441a3d99464f0f04b935445c4aa7f1af689e94c976605bbccb3320d8086efda1be6a1b13aa1a76a8cf761a67285a40d30d7c109369fd36c8a'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['skilltrainer.gg']
 
 
 # Application definition
@@ -149,7 +149,14 @@ SIMPLE_JWT = {
 
 
 CORS_ALLOWED_ORIGINS = [
-  "http://localhost:5173",
+  "https://skilltrainer.gg",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_HSTS_SECONDS = 31536000
+SECURE_SSL_REDIRECT = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True

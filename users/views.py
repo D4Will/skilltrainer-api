@@ -41,7 +41,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         value=access_token,
         httponly=True,
         secure=True,
-        samesite='None',
+        samesite='Strict',
         path='/',
         max_age=timedelta(hours=1)
       )
@@ -51,7 +51,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         value=refresh_token,
         httponly=True,
         secure=True,
-        samesite='None',
+        samesite='Strict',
         path='/',
         max_age=timedelta(weeks=99)
       )
@@ -83,7 +83,7 @@ class CustomTokenRefreshView(TokenRefreshView, BlacklistMixin):
         value=access_token,
         httponly=True,
         secure=True,
-        samesite='None',
+        samesite='Strict',
         path='/',
         max_age=timedelta(hours=1)
       )
@@ -109,7 +109,7 @@ class LogoutView(APIView, BlacklistMixin):
         value=None,
         httponly=True,
         secure=True,
-        samesite='None',
+        samesite='Strict',
         path='/',
         max_age=timedelta(seconds=1)
       )
@@ -119,7 +119,7 @@ class LogoutView(APIView, BlacklistMixin):
         value=None,
         httponly=True,
         secure=True,
-        samesite='None',
+        samesite='Strict',
         path='/',
         max_age=timedelta(seconds=1)
       )
