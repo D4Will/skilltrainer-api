@@ -21,3 +21,10 @@ class RegularUserSerializer(serializers.ModelSerializer):
     user.set_password(validated_data['password'])
     user.save()
     return user
+
+  def validate(self, data):
+    if User.objects.filter(email=data['email']).exists():
+      raise serializers.ValidationError('Email must be unique.')
+    if len(data['password']) < 8:
+      raise serializers.ValidationError('Password must be at least 8 characters.')
+    return data
