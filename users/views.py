@@ -43,6 +43,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         secure=True,
         samesite='Strict',
         path='/',
+        domain='skilltrainer.org',
         max_age=timedelta(hours=1)
       )
 
@@ -53,6 +54,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         secure=True,
         samesite='Strict',
         path='/',
+        domain='skilltrainer.org',
         max_age=timedelta(weeks=99)
       )
 
@@ -85,6 +87,7 @@ class CustomTokenRefreshView(TokenRefreshView, BlacklistMixin):
         secure=True,
         samesite='Strict',
         path='/',
+        domain='skilltrainer.org',
         max_age=timedelta(hours=1)
       )
 
@@ -111,6 +114,7 @@ class LogoutView(APIView, BlacklistMixin):
         secure=True,
         samesite='Strict',
         path='/',
+        domain='skilltrainer.org',
         max_age=timedelta(seconds=1)
       )
 
@@ -121,6 +125,7 @@ class LogoutView(APIView, BlacklistMixin):
         secure=True,
         samesite='Strict',
         path='/',
+        domain='skilltrainer.org',
         max_age=timedelta(seconds=1)
       )
       return res
