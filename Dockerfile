@@ -15,10 +15,9 @@ RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 # Install Python dependencies
-COPY requirements/base.txt requirements/base.txt
-COPY requirements/production.txt requirements/production.txt
+COPY requirements.txt requirements.txt
 RUN pip install --upgrade pip && \
-  pip install --no-cache-dir -r requirements/production.txt
+  pip install --no-cache-dir -r requirements.txt
 
 # Stage 2: Runtime
 FROM python:3.13-slim AS runtime
@@ -54,7 +53,7 @@ USER appuser
 EXPOSE 8000
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=300s --retries=3 \
   CMD curl -f http://localhost:8000/health/ || exit 1
 
 # Run gunicorn with dynamic workers based on CPU cores

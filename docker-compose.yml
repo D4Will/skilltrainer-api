@@ -4,7 +4,7 @@ services:
     container_name: skilltrainer_db
     restart: unless-stopped
     env_file:
-      - .env.production
+      - Path: ./.env.production
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -35,7 +35,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
+      start_period: 300s
     networks:
       - app_network
     command: >
