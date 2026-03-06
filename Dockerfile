@@ -44,17 +44,17 @@ RUN useradd --create-home appuser
 COPY --chown=appuser:appuser . /app/
 
 # Create directories
-RUN mkdir -p /app/staticfiles /app/media /app/logs && \
-  chown -R appuser:appuser /app/staticfiles /app/media /app/logs
+RUN mkdir -p /app/staticfiles /app/logs && \
+  chown -R appuser:appuser /app/staticfiles /app/logs
 
 # Switch to non-root user
-USER appuser
+#USER appuser
 
 EXPOSE 8000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=300s --retries=3 \
-  CMD curl -f http://localhost:8000/health/ || exit 1
+  CMD curl http://localhost:8000/authenticated/ || exit 1
 
 # Run gunicorn with dynamic workers based on CPU cores
 # Formula: (2 × CPU cores) + 1

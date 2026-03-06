@@ -1,18 +1,21 @@
 from .base import *
-from decouple import Config, RepositoryEnv, Csv
+#from decouple import Config, RepositoryEnv, Csv
+from decouple import config, Csv
 import dj_database_url
-from pathlib import Path
+#from pathlib import Path
 
-config = Config(RepositoryEnv(Path(__file__).resolve().parent.parent.parent / '.env.production'))
+#Path(__file__).resolve().parent.parent.parent / '.env.production'
+#config = Config(RepositoryEnv(Path('/home/deploy/skill-trainer/backend/.env.production')))
 
 DEBUG = False
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+SECRET_KEY = config('SECRET_KEY')
 
 DATABASES = {
     'default': dj_database_url.config(
       default=config('DATABASE_URL'),
-      conn_max_age=600,
+      conn_max_age=6000,
       conn_health_checks=True,
     )
 }

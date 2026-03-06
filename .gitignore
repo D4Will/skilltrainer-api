@@ -114,3 +114,8 @@ node_modules/
 
 # VS Code
 .vscode
+
+# local only
+.local
+.local*
+.local/
