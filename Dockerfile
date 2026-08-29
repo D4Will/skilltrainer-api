@@ -1,7 +1,11 @@
 # Dockerfile
-# Stage 1: Build dependencies
+# Stage 1: Build stage
 FROM python:3.13-slim AS builder
 
+# Make app directory
+RUN mkdir /app
+
+# Set working directory in container
 WORKDIR /app
 
 # Install build dependencies
@@ -10,23 +14,26 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   libpq-dev \
   && rm -rf /var/lib/apt/lists/*
 
-# Create virtual environment
-RUN python -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
+# Optimize Python
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Upgrade pip and install dependencies
+RUN pip install --upgrade pip
+
+# Copy the requirements file first (better caching)
+COPY requirements.txt /app/
 
 # Install Python dependencies
-COPY requirements.txt requirements.txt
-RUN pip install --upgrade pip && \
-  pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Stage 2: Runtime
+# Stage 2: Production stage
 FROM python:3.13-slim AS runtime
 
-ENV PYTHONDONTWRITEBYTECODE=1 \
-  PYTHONUNBUFFERED=1 \
-  PATH="/opt/venv/bin:$PATH"
-
-WORKDIR /app
+# Create non-root user
+RUN useradd -m -r appuser && \
+  mkdir /app && \
+  chown -R appuser /app
 
 # Install runtime dependencies only
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -34,34 +41,30 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   curl \
   && rm -rf /var/lib/apt/lists/*
 
-# Copy virtual environment from builder
-COPY --from=builder /opt/venv /opt/venv
+# Copy the Python dependencies from the build stage
+COPY --from=builder /usr/local/lib/python3.13/site-packages/ /usr/local/lib/python3.13/site-packages/
+COPY --from=builder /usr/local/bin/ /usr/local/bin/
 
-# Create non-root user
-RUN useradd --create-home appuser
+# Set the working directory
+WORKDIR /app
 
 # Copy application code
-COPY --chown=appuser:appuser . /app/
+COPY --chown=appuser:appuser . .
 
 # Create directories
-RUN mkdir -p /app/staticfiles /app/logs && \
-  chown -R appuser:appuser /app/staticfiles /app/logs
+RUN mkdir -p /app/staticfiles && \
+  chown -R appuser /app/staticfiles
+
+# Optimize Python
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 # Switch to non-root user
-#USER appuser
+USER appuser
 
+# Expose the application port
 EXPOSE 8000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=300s --retries=3 \
-  CMD curl http://localhost:8000/authenticated/ || exit 1
-
 # Run gunicorn with dynamic workers based on CPU cores
-# Formula: (2 × CPU cores) + 1
-CMD ["sh", "-c", "gunicorn mysite.wsgi:application \
-  --bind 0.0.0.0:8000 \
-  --workers $((2 * $(nproc) + 1)) \
-  --threads 2 \
-  --worker-class gthread \
-  --access-logfile - \
-  --error-logfile -"]
+# Number of workers formula: (2 × CPU cores) + 1
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "mysite.wsgi:application"]

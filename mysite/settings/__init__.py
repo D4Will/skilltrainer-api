@@ -1,8 +1,11 @@
 import os
+from dotenv import load_dotenv
 
-environment = os.environ.get('DJANGO_ENV', 'development')
+load_dotenv(".env")
 
-if environment == 'production':
-  from .production import *
+environment = os.getenv("DJANGO_ENV")
+
+if environment == "production":
+    from .production import *
 else:
-  from .development import *
+    from .development import *

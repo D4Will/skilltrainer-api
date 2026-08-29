@@ -1,4 +1,4 @@
 from django.contrib import admin
-from games.models import TargetScore
+from games.models import TargetScore, ReactionScore, TypingScore
 
-admin.site.register(TargetScore)
+admin.site.register([TargetScore, ReactionScore, TypingScore])
