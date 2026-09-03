@@ -122,4 +122,4 @@ cython_debug/
 # local development setup files
 nginx.local.conf
 docker-compose.override.yml
-./certs
+/certs/
