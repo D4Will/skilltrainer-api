@@ -111,9 +111,6 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-# Dependency directories
-node_modules/
-
 # VS Code
 .vscode
 
@@ -121,3 +118,8 @@ node_modules/
 .local
 .local*
 .local/
+
+# local development setup files
+nginx.local.conf
+docker-compose.override.yml
+./certs

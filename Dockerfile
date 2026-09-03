@@ -39,6 +39,7 @@ RUN useradd -m -r appuser && \
 RUN apt-get update && apt-get install -y --no-install-recommends \
   libpq5 \
   curl \
+  gosu \
   && rm -rf /var/lib/apt/lists/*
 
 # Copy the Python dependencies from the build stage
@@ -55,16 +56,17 @@ COPY --chown=appuser:appuser . .
 RUN mkdir -p /app/staticfiles && \
   chown -R appuser /app/staticfiles
 
+# Make the startup script executable.
+RUN chmod +x /app/entrypoint.sh
+
 # Optimize Python
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-
-# Switch to non-root user
-USER appuser
 
 # Expose the application port
 EXPOSE 8000
 
 # Run gunicorn with dynamic workers based on CPU cores
 # Number of workers formula: (2 × CPU cores) + 1
+ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "mysite.wsgi:application"]
